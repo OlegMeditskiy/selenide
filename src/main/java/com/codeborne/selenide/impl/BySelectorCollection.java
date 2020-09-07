@@ -14,6 +14,7 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class BySelectorCollection implements WebElementsCollection {
+  private final WebElementPrinter printer = Plugins.getWebElementPrinter();
 
   private final Driver driver;
   private final SearchContext parent;
@@ -41,10 +42,10 @@ public class BySelectorCollection implements WebElementsCollection {
   @CheckReturnValue
   @Nonnull
   public String description() {
-    return parent == null ? Describe.selector(selector) :
+    return parent == null ? printer.selector(selector) :
         (parent instanceof SelenideElement) ?
-            ((SelenideElement) parent).getSearchCriteria() + "/" + Describe.shortly(selector) :
-            Describe.shortly(selector);
+            ((SelenideElement) parent).getSearchCriteria() + "/" + printer.shortly(selector) :
+          printer.shortly(selector);
   }
 
   @Override
