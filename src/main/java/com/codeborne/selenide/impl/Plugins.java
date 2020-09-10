@@ -19,7 +19,7 @@ public class Plugins {
 
   @SuppressWarnings("unchecked")
   private static <T> T getPlugin(Class<T> klass, Class<? extends T> defaultImplementation) {
-    return (T) cache.computeIfAbsent(klass, (c) -> loadPlugin(klass, defaultImplementation));
+    return (T) cache.computeIfAbsent(klass, c -> loadPlugin(klass, defaultImplementation));
   }
 
   private static <T> T loadPlugin(Class<T> klass, Class<? extends T> defaultImplementation) {
