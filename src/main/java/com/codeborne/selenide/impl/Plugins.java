@@ -9,6 +9,12 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * We assume this API will change in next releases.
+ * Be aware if you are going to use it.
+ *
+ * @since Selenide 5.15.0
+ */
 public class Plugins {
   private static final Logger logger = LoggerFactory.getLogger(Plugins.class);
   private static final Map<Class<?>, Object> cache = new ConcurrentHashMap<>();
@@ -32,6 +38,8 @@ public class Plugins {
         throw new IllegalStateException("Failed to initialize " + defaultImplementation.getName(), e);
       }
     }
-    return loader.next();
+    T implementation = loader.next();
+    logger.info("Using implementation of {}: {}", klass.getName(), implementation.getClass().getName());
+    return implementation;
   }
 }
