@@ -19,7 +19,7 @@ public class WebElementWrapper extends WebElementSource {
             new SelenideElementProxy(new WebElementWrapper(driver, element)));
   }
 
-  private final WebElementPrinter printer = Plugins.getWebElementPrinter();
+  private final ElementDescriber describe = Plugins.getElementDescriber();
   private final Driver driver;
   private final WebElement delegate;
 
@@ -39,14 +39,14 @@ public class WebElementWrapper extends WebElementSource {
   @CheckReturnValue
   @Nonnull
   public String getSearchCriteria() {
-    return printer.shortly(driver, delegate);
+    return describe.briefly(driver, delegate);
   }
 
   @Override
   @CheckReturnValue
   @Nonnull
   public String toString() {
-    return printer.describe(driver(), delegate);
+    return describe.fully(driver(), delegate);
   }
 
   @Override

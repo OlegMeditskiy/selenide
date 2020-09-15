@@ -50,7 +50,7 @@ import static org.apache.hc.client5.http.protocol.HttpClientContext.COOKIE_STORE
 @ParametersAreNonnullByDefault
 public class DownloadFileWithHttpRequest {
   private static final Logger log = LoggerFactory.getLogger(DownloadFileWithHttpRequest.class);
-  private final WebElementPrinter printer = Plugins.getWebElementPrinter();
+  private final ElementDescriber describe = Plugins.getElementDescriber();
 
   protected boolean ignoreSelfSignedCerts = true;
 
@@ -70,7 +70,7 @@ public class DownloadFileWithHttpRequest {
   public File download(Driver driver, WebElement element, long timeout, FileFilter fileFilter) throws IOException {
     String fileToDownloadLocation = element.getAttribute("href");
     if (fileToDownloadLocation == null || fileToDownloadLocation.trim().isEmpty()) {
-      throw new IllegalArgumentException("The element does not have href attribute: " + printer.describe(driver, element));
+      throw new IllegalArgumentException("The element does not have href attribute: " + describe.fully(driver, element));
     }
 
     return download(driver, fileToDownloadLocation, timeout, fileFilter);

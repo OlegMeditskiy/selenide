@@ -21,7 +21,7 @@ import static java.lang.Thread.currentThread;
 
 @ParametersAreNonnullByDefault
 public class ElementFinder extends WebElementSource {
-  private final WebElementPrinter printer = Plugins.getWebElementPrinter();
+  private final ElementDescriber describe = Plugins.getElementDescriber();
 
   @CheckReturnValue
   @Nonnull
@@ -140,8 +140,8 @@ public class ElementFinder extends WebElementSource {
   @Nonnull
   public String getSearchCriteria() {
     return index == 0 ?
-        printer.selector(criteria) :
-        printer.selector(criteria) + '[' + index + ']';
+        describe.selector(criteria) :
+        describe.selector(criteria) + '[' + index + ']';
   }
 
   @Override

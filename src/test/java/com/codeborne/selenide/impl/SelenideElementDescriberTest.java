@@ -17,19 +17,23 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class SelenideWebElementPrinterTest implements WithAssertions {
-  private final SelenideWebElementPrinter printer = new SelenideWebElementPrinter();
+class SelenideElementDescriberTest implements WithAssertions {
+  private final SelenideElementDescriber describe = new SelenideElementDescriber();
 
   @Test
   void selectorIsReportedAsIs() {
-    assertThat(printer.selector(By.cssSelector("#firstName")))
-      .isEqualTo("#firstName");
-    assertThat(printer.selector(By.id("firstName")))
-      .isEqualTo("By.id: firstName");
-    assertThat(printer.selector(By.className("firstName")))
-      .isEqualTo("By.className: firstName");
-    assertThat(printer.selector(By.name("firstName")))
-      .isEqualTo("By.name: firstName");
+    assertThat(describe.selector(By.id("firstName"))).isEqualTo("By.id: firstName");
+    assertThat(describe.selector(By.className("bootstrap-active"))).isEqualTo("By.className: bootstrap-active");
+    assertThat(describe.selector(By.name("firstName"))).isEqualTo("By.name: firstName");
+    assertThat(describe.selector(By.linkText("tere"))).isEqualTo("By.linkText: tere");
+    assertThat(describe.selector(By.partialLinkText("tere"))).isEqualTo("By.partialLinkText: tere");
+    assertThat(describe.selector(By.tagName("tere"))).isEqualTo("By.tagName: tere");
+    assertThat(describe.selector(By.xpath("tere"))).isEqualTo("By.xpath: tere");
+  }
+
+  @Test
+  void cssSelectorIsShortened() {
+    assertThat(describe.selector(By.cssSelector("#firstName"))).isEqualTo("#firstName");
   }
 
   @Test
@@ -42,7 +46,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     when(selenideElement.toWebElement()).thenReturn(webElement);
     doThrow(new ElementShould(driver, null, null, visible, webElement, null)).when(selenideElement).getTagName();
 
-    assertThat(printer.shortly(driver, selenideElement))
+    assertThat(describe.briefly(driver, selenideElement))
       .isEqualTo("Ups, failed to described the element [caused by: StaleElementReferenceException: disappeared]");
   }
 
@@ -51,7 +55,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     Driver driver = mock(Driver.class);
     SelenideElement selenideElement = element("h1", "class", "active");
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 class=\"active\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 class=\"active\">Hello yo</h1>");
   }
 
   @Test
@@ -59,7 +63,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     Driver driver = mock(Driver.class);
     SelenideElement selenideElement = element("input", "readonly", "");
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<input readonly>Hello yo</input>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<input readonly>Hello yo</input>");
   }
 
   @Test
@@ -68,7 +72,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("input", "readonly", "");
     doThrow(new StaleElementReferenceException("Booo")).when(selenideElement).getTagName();
 
-    assertThat(printer.describe(driver, selenideElement))
+    assertThat(describe.fully(driver, selenideElement))
       .isEqualTo("Ups, failed to described the element [caused by: StaleElementReferenceException: Booo]");
   }
 
@@ -78,7 +82,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("input", "readonly", "");
     doThrow(new IndexOutOfBoundsException("Fooo")).when(selenideElement).getTagName();
 
-    assertThat(printer.describe(driver, selenideElement))
+    assertThat(describe.fully(driver, selenideElement))
       .isEqualTo("Ups, failed to described the element [caused by: java.lang.IndexOutOfBoundsException: Fooo]");
   }
 
@@ -88,7 +92,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("h1", "name", "theName");
     when(selenideElement.getAttribute("class")).thenThrow(new NoSuchElementException("Appium throws exception for missing attributes"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
   }
 
   @Test
@@ -98,7 +102,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     when(selenideElement.getAttribute("disabled")).thenThrow(new UnsupportedOperationException(
       "io.appium.uiautomator2.common.exceptions.NoAttributeFoundException: 'disabled' attribute is unknown for the element"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
   }
 
   @Test
@@ -108,7 +112,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     when(selenideElement.getAttribute("disabled")).thenThrow(new UnsupportedCommandException(
       "io.appium.uiautomator2.common.exceptions.NoAttributeFoundException: 'disabled' attribute is unknown for the element"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 name=\"theName\">Hello yo</h1>");
   }
 
   @Test
@@ -117,7 +121,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("h1", "name", "fname");
     when(selenideElement.isSelected()).thenThrow(new UnsupportedOperationException("isSelected doesn't work in iOS"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 name=\"fname\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 name=\"fname\">Hello yo</h1>");
   }
 
   @Test
@@ -126,7 +130,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("h1", "name", "fname");
     when(selenideElement.isSelected()).thenThrow(new WebDriverException("isSelected might fail on stolen element"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo("<h1 name=\"fname\">Hello yo</h1>");
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo("<h1 name=\"fname\">Hello yo</h1>");
   }
 
   @Test
@@ -135,7 +139,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("h1", "name", "fname");
     when(selenideElement.isDisplayed()).thenThrow(new UnsupportedOperationException("it happens"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo(
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo(
       "<h1 name=\"fname\" displayed:java.lang.UnsupportedOperationException: it happens>Hello yo</h1>");
   }
 
@@ -145,7 +149,7 @@ class SelenideWebElementPrinterTest implements WithAssertions {
     SelenideElement selenideElement = element("h1", "name", "fname");
     when(selenideElement.isDisplayed()).thenThrow(new WebDriverException("isDisplayed might fail on stolen element"));
 
-    assertThat(printer.describe(driver, selenideElement)).isEqualTo(
+    assertThat(describe.fully(driver, selenideElement)).isEqualTo(
       "<h1 name=\"fname\" displayed:WebDriverException: isDisplayed might fail on stolen element>Hello yo</h1>");
   }
 

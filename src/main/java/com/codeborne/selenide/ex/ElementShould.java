@@ -13,7 +13,7 @@ public class ElementShould extends UIAssertionError {
     super(driver,
       String.format("Element should %s%s {%s}%nElement: '%s'%s",
         prefix, expectedCondition, searchCriteria,
-        Plugins.getWebElementPrinter().describe(driver, element),
+        Plugins.getElementDescriber().fully(driver, element),
         actualValue(expectedCondition, driver, element)
       ), lastError);
   }

@@ -13,8 +13,8 @@ public class Plugins {
   private static final Logger logger = LoggerFactory.getLogger(Plugins.class);
   private static final Map<Class<?>, Object> cache = new ConcurrentHashMap<>();
 
-  public static WebElementPrinter getWebElementPrinter() {
-    return getPlugin(WebElementPrinter.class, com.codeborne.selenide.impl.SelenideWebElementPrinter.class);
+  public static ElementDescriber getElementDescriber() {
+    return getPlugin(ElementDescriber.class, SelenideElementDescriber.class);
   }
 
   @SuppressWarnings("unchecked")

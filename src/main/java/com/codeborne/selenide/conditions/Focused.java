@@ -3,14 +3,14 @@ package com.codeborne.selenide.conditions;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.impl.Plugins;
-import com.codeborne.selenide.impl.WebElementPrinter;
+import com.codeborne.selenide.impl.ElementDescriber;
 import org.openqa.selenium.WebElement;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class Focused extends Condition {
-  private final WebElementPrinter printer = Plugins.getWebElementPrinter();
+  private final ElementDescriber describe = Plugins.getElementDescriber();
 
   public Focused() {
     super("focused");
@@ -30,7 +30,7 @@ public class Focused extends Condition {
   public String actualValue(Driver driver, WebElement webElement) {
     WebElement focusedElement = getFocusedElement(driver);
     return focusedElement == null ? "No focused element found " :
-      "Focused element: " + printer.describe(driver, focusedElement) +
-        ", current element: " + printer.describe(driver, webElement);
+      "Focused element: " + describe.fully(driver, focusedElement) +
+        ", current element: " + describe.fully(driver, webElement);
   }
 }
