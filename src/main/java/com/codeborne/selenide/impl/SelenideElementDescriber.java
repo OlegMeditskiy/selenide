@@ -63,11 +63,8 @@ public class SelenideElementDescriber implements ElementDescriber {
   @CheckReturnValue
   @Nonnull
   public String selector(By selector) {
-    if (selector instanceof By.ByCssSelector) {
-      return selector.toString()
-        .replace("By.selector: ", "")
-        .replace("By.cssSelector: ", "");
-    }
-    return selector.toString();
+    return selector.toString()
+      .replace("By.selector: ", "")
+      .replace("By.cssSelector: ", "");
   }
 }
